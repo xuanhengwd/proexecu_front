@@ -2,7 +2,7 @@
 
   <!--搜索框和按钮-->
   <el-form :inline="true" :model="info" class="demo-form-inline">
-    <el-form-item label="流程名称">
+    <el-form-item label="项目名称">
       <el-input v-model="info.pro_name" placeholder="采购名称"></el-input>
     </el-form-item>
     <el-form-item>
@@ -22,19 +22,27 @@
           width="50">
       </el-table-column>
 
-
+      <el-table-column
+          prop="pro_no"
+          label="项目编号">
+      </el-table-column>
       <el-table-column
           prop="pro_name"
-          label="采购名称">
+          label="项目名称">
       </el-table-column>
 
-      <el-table-column
-          prop="funds_name"
-          label="经费名称">
-      </el-table-column>
+
       <el-table-column
           prop="applicant_name"
           label="申请人">
+      </el-table-column>
+      <el-table-column
+          prop="pro_principal_name"
+          label="项目负责人">
+      </el-table-column>
+      <el-table-column
+          prop="dept_principal_name"
+          label="部门负责人">
       </el-table-column>
       <el-table-column
           prop="app_date"
@@ -55,12 +63,14 @@
 
 
       <el-table-column
-          label="操作">
+          label="操作"
+          width="200"
+      >
         <template v-slot="scope">
           <el-row>
-            <el-button type="primary" @click="execute(scope.$index,scope.row)">采购执行</el-button>
+            <el-button type="primary" @click="execute(scope.$index,scope.row)">申请</el-button>
 
-            <el-button type="danger" @click="cancle(scope.$index, scope.row)">取消</el-button>
+            <el-button type="danger" @click="cancel(scope.$index, scope.row)">取消</el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -83,25 +93,29 @@
 
 <script>
 import axios from "axios";
+import {localGet} from "@/utils";
 
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Declare",
-  data(){
-    return{
+  data() {
+    return {
       tableData: [{
+        pro_no: '',
         pro_name: '',
         funds_name: '',
         applicant_name: '',
+        pro_principal_name: '',
+        dept_principal_name: '',
         app_date: '',
         state: '',
-        apply_reason:'',
+        apply_reason: '',
         budget: '',
 
       },],
 
-      info:{
-        pro_name:'',
+      info: {
+        pro_name: '',
       },
       currentPage: 1,
       pageCount: 5,
@@ -111,7 +125,7 @@ export default {
   mounted() {
     this.selectByCondition()
   },
-  methods:{
+  methods: {
     selectByCondition() {
 
       const _this = this;
@@ -129,6 +143,45 @@ export default {
       })
     },
 
+    execute(index, row) {
+      //console.log(row.id);
+
+      const _this = this
+      const token = localGet(`token`)
+      const userId = token.id;
+      console.log(userId)
+      axios({
+        method: "post",
+        url: "/proDeclare/addExecute",
+        params: {
+          userId: userId,
+          businessKey: row.id
+
+        }
+      }).then(function (resp) {
+        if ("success" === resp.data) {
+
+          _this.selectByCondition();
+          _this.$message({
+            message: '恭喜你，申请成功！',
+            type: 'success'
+          });
+
+        } else {
+          _this.$message({
+            message: '申请失败',
+            type: 'error'
+          });
+        }
+      })
+
+
+    },
+
+    cancel(index, row) {
+
+    },
+
 
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
@@ -136,9 +189,11 @@ export default {
       this.selectByCondition();
     },
 
+    handleSelectionChange() {
+    }
+
 
   },
-
 
 
 }

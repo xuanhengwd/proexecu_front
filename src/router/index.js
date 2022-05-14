@@ -12,6 +12,9 @@ import Home from "@/components/info/Home";
 import Locations from "@/components/info/Locations";
 import Flow from "@/components/system/Flow";
 import Declare from "@/components/Biding/Declare";
+import WaitingTask from "@/components/task/WaitingTask";
+import ProjectInfo from "@/components/Biding/ProjectInfo";
+import CheckInfo from "@/components/check/CheckInfo";
 
 
 const routes = [
@@ -82,6 +85,21 @@ const routes = [
                 path: '/declare',
                 name: 'Declare',
                 component: Declare
+            },
+            {
+                path: '/waitingTask',
+                name: 'WaitingTask',
+                component: WaitingTask
+            },
+            {
+                path: '/projectInfo',
+                name: 'ProjectInfo',
+                component: ProjectInfo
+            },
+            {
+                path: '/checkInfo',
+                name: 'CheckInfo',
+                component: CheckInfo
             },
 
 

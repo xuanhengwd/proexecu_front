@@ -15,6 +15,18 @@
         </el-menu-item>
 
 
+        <el-sub-menu index="1">
+          <template #title>
+            <el-icon><Calendar /></el-icon>
+            <span>我的任务</span>
+          </template>
+          <el-menu-item-group>
+            <el-menu-item index="1-1" @click="processingTask">在办任务</el-menu-item>
+            <el-menu-item index="1-2" @click="waitingTask">待办任务</el-menu-item>
+          </el-menu-item-group>
+        </el-sub-menu>
+
+
         <el-sub-menu index="2">
           <template #title>
             <el-icon>
@@ -41,9 +53,9 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="3-1" @click="DeclareInfo">申报信息</el-menu-item>
-            <el-menu-item index="3-2">标书审核</el-menu-item>
-            <el-menu-item index="3-3">项目信息</el-menu-item>
-            <el-menu-item index="3-4">中标审核</el-menu-item>
+<!--            <el-menu-item index="3-2">标书审核</el-menu-item>-->
+            <el-menu-item index="3-2" @click="ProjectInfos">项目信息</el-menu-item>
+<!--            <el-menu-item index="3-4">中标审核</el-menu-item>-->
           </el-menu-item-group>
         </el-sub-menu>
 
@@ -55,7 +67,8 @@
             <span>合同签订</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="4-1">合同</el-menu-item>
+            <el-menu-item index="4-1">资产明细信息</el-menu-item>
+            <el-menu-item index="4-2">合同申请</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
 
@@ -67,7 +80,7 @@
             <span>验收模块</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="5-1">验收</el-menu-item>
+            <el-menu-item index="5-1" @click="Getcheck">验收申请</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
 
@@ -106,6 +119,14 @@ export default {
   name: "Catalogue",
   methods: {
 
+    processingTask(){},
+
+
+    waitingTask(){
+      this.$router.push({name: 'WaitingTask'});
+    },
+
+
     openMenu(key, keyPath){
         console.log(key,keyPath)
     },
@@ -136,6 +157,14 @@ export default {
     DeclareInfo(){
       this.$router.push({name: 'Declare'});
     },
+
+    ProjectInfos(){
+      this.$router.push({name: 'ProjectInfo'});
+    },
+
+    Getcheck(){
+      this.$router.push({name: 'CheckInfo'});
+    }
 
     // handleOpen(key, keyPath) {
     //   console.log(key, keyPath);

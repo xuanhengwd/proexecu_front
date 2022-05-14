@@ -35,17 +35,17 @@
 
       <el-upload
           class="upload-demo"
-          ref="upload"
-          action=""
-          :auto-upload="false"
-          :file-list="fileList"
-          :http-request="uploadFile"
+          action="http://localhost:8080/dept/addDepts"
+          :on-preview="handlePreview"
+          :on-remove="handleRemove"
+          :before-remove="beforeRemove"
           multiple
-          :limit=limit
-      >
+          :limit="1"
+          :on-exceed="handleExceed"
+          :file-list="fileList">
         <el-button size="small" type="primary">点击上传</el-button>
         <template #tip>
-          <div class="el-upload__tip">只能上传.xls/xlsx文件，且不超过10M</div>
+        <div class="el-upload__tip">只能上传excle文件，且不超过10M</div>
         </template>
       </el-upload>
 
@@ -53,7 +53,7 @@
     <template #footer>
         <span class="dialog-footer">
         <el-button @click="dialogVisible1 = false">取 消</el-button>
-        <el-button type="primary" @click="uploadExcle">确 定</el-button>
+        <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
         </span>
     </template>
   </el-dialog>
@@ -260,59 +260,20 @@ export default {
   },
   methods: {
 
-    /*  文件上传*/
-    // 上传文件之前的钩子, 参数为上传的文件,若返回 false 或者返回 Promise 且被 reject，则停止上传
-    beforeUpload(file) {
-      console.log(file)
-      let extension = file.name.substring(file.name.lastIndexOf('.') + 1)
-      let size = file.size / 1024 / 1024
-      if (extension !== 'xlsx' || extension !== 'xls') {
-        this.$message.warning('只能上传后缀是excle的文件')
-      }
-      if (size > 10) {
-        this.$message.warning('文件大小不得超过10M')
-      }
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handlePreview(file) {
+      console.log(file);
+    },
+    handleExceed(files, fileList) {
+      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
+    },
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${ file.name }？`);
     },
 
-    uploadFile() {
-      console.log(this.fileList);
-      if (this.fileList.length === 0) {
-        this.$message.warning('请上传文件')
-      } else {
-        const fileObj = this.fileList[0];
-        // const file=new FormData();
-        // file.append("file",fileObj);
-        // console.log(file)
-        // this.$refs.upload.submit();
-        // // this.dialogVisible1=false;
-        // // this.selectAll();
-        const _this = this;
-        //发送请求
-        axios({
-          method: "post",
-          url: "/dept/addDepts",
-          params: {file: fileObj},
-          headers: {
-            'Content-Type': 'multipart/form-data'
-          }
-        }).then(function (resp) {
-          if (resp.data === true) {
-            _this.dialogVisible1 = false;
-            _this.selectByCondition();
-            _this.$message({
-              message: '恭喜你，添加成功！',
-              type: 'success'
-            });
-          }
 
-        })
-
-      }
-    },
-
-    uploadExcle(){
-      this.$refs.upload.submit();
-    },
     getCount() {
       const _this = this;
       axios({
@@ -461,6 +422,7 @@ export default {
     //条件查询
     selectByCondition() {
 
+      this.getCount();
       this.dept.deptName = this.info.deptName;
       this.dept.deptNo = this.info.deptNo;
       console.log(this.dept)
