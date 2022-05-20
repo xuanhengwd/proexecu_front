@@ -2,7 +2,7 @@
   <!--搜索框和按钮-->
   <el-form :inline="true" :model="info" class="demo-form-inline">
     <el-form-item label="项目名称">
-      <el-input v-model="info.pro_name" placeholder="采购名称"></el-input>
+      <el-input v-model="info.pro_name" placeholder="项目名称"></el-input>
     </el-form-item>
     <el-form-item>
       <el-button type="primary" @click="selectByCondition">查询</el-button>
@@ -33,11 +33,11 @@
         <el-input v-model="projectInfo.bid_linkman"></el-input>
       </el-form-item>
 
-      <el-form-item label="联系方式">
+      <el-form-item label="联系电话">
         <el-input v-model="projectInfo.bid_tel"></el-input>
       </el-form-item>
 
-      <el-form-item label="中标理由">
+      <el-form-item label="中标原因">
         <el-input type="textarea" v-model="projectInfo.bid_reason"></el-input>
       </el-form-item>
       <el-form-item>
@@ -77,7 +77,9 @@
 
       <el-table-column
           prop="bid_date"
-          label="中标日期">
+          label="中标日期"
+          width="110"
+      >
       </el-table-column>
       <el-table-column
           prop="bid_linkman"
@@ -86,7 +88,9 @@
 
       <el-table-column
           prop="bid_tel"
-          label="联系电话">
+          label="联系电话"
+          width="150"
+      >
       </el-table-column>
       <el-table-column
           prop="bid_reason"
@@ -186,13 +190,16 @@ export default {
     selectByCondition() {
 
       const _this = this;
+      const token = localGet(`token`)
+      const userId = token.id;
       axios({
         method: "post",
         url: "/projectInfo/selectProjectInfoByCondition",
         params: {
           pro_name: this.info.pro_name,
           curPage: this.currentPage,
-          pageCount: this.pageCount
+          pageCount: this.pageCount,
+          userId:userId
 
         }
       }).then(function (resp) {
@@ -205,7 +212,7 @@ export default {
       const _this = this
       const token = localGet(`token`)
       const userId = token.id;
-      console.log(userId)
+      //console.log(userId)
       axios({
         method: "post",
         url: "/projectInfo/addApply",
@@ -217,17 +224,22 @@ export default {
       }).then(function (resp){
         if("success"===resp.data){
 
-          _this.selectByCondition();
+          _this.selectByCondition()
           _this.$message({
             message: '恭喜你，申请成功！',
             type: 'success'
-          });
+          })
 
-        }else{
+        }else if("empty"===resp.data){
           _this.$message({
-            message: '申请失败',
+            message: '请填写信息！',
             type: 'error'
-          });
+          })
+        }else {
+          _this.$message({
+            message: '请勿重复申请！',
+            type: 'error'
+          })
         }
       })
 

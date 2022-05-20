@@ -1,5 +1,4 @@
 <template>
-
   <!--搜索框和按钮-->
   <el-form :inline="true" :model="info" class="demo-form-inline">
     <el-form-item label="项目名称">
@@ -66,9 +65,9 @@
       >
         <template v-slot="scope">
           <el-row>
-            <el-button type="primary" @click="execute(scope.$index,scope.row)">申请</el-button>
+            <el-button type="primary" @click="agreeTask(scope.$index,scope.row)">同意</el-button>
 
-            <el-button type="danger" @click="cancel(scope.$index, scope.row)">取消</el-button>
+            <el-button type="danger" @click="refuseTask(scope.$index, scope.row)">拒绝</el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -90,12 +89,11 @@
 </template>
 
 <script>
-import axios from "axios";
 import {localGet} from "@/utils";
+import axios from "axios";
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: "Declare",
+  name: "BiddingReview",
   data() {
     return {
       tableData: [{
@@ -121,56 +119,49 @@ export default {
     }
   },
   mounted() {
-    this.selectByCondition()
+    this.selectAll();
   },
   methods: {
-    selectByCondition() {
+    selectAll() {
 
-      const _this = this;
+      const _this = this
       const token = localGet(`token`)
       const userId = token.id;
       axios({
         method: "post",
-        url: "/proDeclare/selectProDeclareByCondition",
+        url: "/proDeclare/getTask",
         params: {
-          userId:userId,
-          pro_name: this.info.pro_name,
-          curPage: this.currentPage,
-          pageCount: this.pageCount
-
+          userId
         }
       }).then(function (resp) {
         _this.tableData = resp.data;
       })
     },
 
-    execute(index, row) {
-      //console.log(row.id);
-
+    agreeTask(index,row){
       const _this = this
       const token = localGet(`token`)
       const userId = token.id;
-      console.log(userId)
+      const flag = 1
       axios({
         method: "post",
-        url: "/proDeclare/addExecute",
+        url: "/proDeclare/completeTask",
         params: {
-          userId: userId,
-          proId: row.id
+          userId:userId,
+          proId:row.id,
+          flag:flag
 
         }
       }).then(function (resp) {
-        if ("success" === resp.data) {
-
-          _this.selectByCondition();
+        if("success"===resp.data){
+          _this.selectAll();
           _this.$message({
-            message: '恭喜你，申请成功！',
+            message: '恭喜你，审核成功！',
             type: 'success'
           });
-
-        } else {
+        }else {
           _this.$message({
-            message: '申请失败',
+            message: '审核失败！',
             type: 'error'
           });
         }
@@ -178,10 +169,7 @@ export default {
 
 
     },
-
-    cancel(index, row) {
-
-    },
+    refuseTask(){},
 
 
     handleCurrentChange(val) {
@@ -194,8 +182,7 @@ export default {
     }
 
 
-  },
-
+  }
 
 }
 </script>

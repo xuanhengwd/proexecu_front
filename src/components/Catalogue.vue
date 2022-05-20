@@ -18,11 +18,12 @@
         <el-sub-menu index="1">
           <template #title>
             <el-icon><Calendar /></el-icon>
-            <span>我的任务</span>
+            <span>任务中心</span>
           </template>
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="processingTask">在办任务</el-menu-item>
             <el-menu-item index="1-2" @click="waitingTask">待办任务</el-menu-item>
+            <el-menu-item index="1-3" >已办任务</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
 
@@ -53,9 +54,9 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="3-1" @click="DeclareInfo">申报信息</el-menu-item>
-<!--            <el-menu-item index="3-2">标书审核</el-menu-item>-->
-            <el-menu-item index="3-2" @click="ProjectInfos">项目信息</el-menu-item>
-<!--            <el-menu-item index="3-4">中标审核</el-menu-item>-->
+            <el-menu-item index="3-2" @click="getBiding">申报信息审核</el-menu-item>
+            <el-menu-item index="3-3" @click="ProjectInfos">中标信息</el-menu-item>
+            <el-menu-item index="3-4" @click="getWinBiding">中标审核</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
 
@@ -67,8 +68,10 @@
             <span>合同签订</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="4-1">资产明细信息</el-menu-item>
-            <el-menu-item index="4-2">合同申请</el-menu-item>
+            <el-menu-item index="4-1" @click="getContractList">合同明细信息</el-menu-item>
+            <el-menu-item index="4-2">合同明细审核</el-menu-item>
+            <el-menu-item index="4-3">合同信息</el-menu-item>
+            <el-menu-item index="4-4">合同审核</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
 
@@ -81,6 +84,7 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="5-1" @click="Getcheck">验收申请</el-menu-item>
+            <el-menu-item index="5-1" @click="Getcheck">验收审核</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
 
@@ -92,8 +96,17 @@
             <span>查询统计</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="6-1">查询统计</el-menu-item>
+            <el-menu-item index="6-1">进度查询</el-menu-item>
           </el-menu-item-group>
+
+          <el-sub-menu index="6-2">
+            <template #title>表单查询</template>
+            <el-menu-item index="6-2-1">经费预算表</el-menu-item>
+            <el-menu-item index="6-2-2">采购申报表</el-menu-item>
+            <el-menu-item index="6-2-3">项目信息表</el-menu-item>
+            <el-menu-item index="6-2-4">合同表</el-menu-item>
+          </el-sub-menu>
+
         </el-sub-menu>
 
         <el-sub-menu index="7">
@@ -164,7 +177,18 @@ export default {
 
     Getcheck(){
       this.$router.push({name: 'CheckInfo'});
+    },
+
+    getBiding(){
+      this.$router.push({name: 'BiddingReview'});
+    },
+    getWinBiding(){
+      this.$router.push({name: 'WinBiding'});
+    },
+    getContractList(){
+      this.$router.push({name: 'ContractList'});
     }
+
 
     // handleOpen(key, keyPath) {
     //   console.log(key, keyPath);

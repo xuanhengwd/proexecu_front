@@ -1,5 +1,4 @@
 <template>
-
   <!--搜索框和按钮-->
   <el-form :inline="true" :model="info" class="demo-form-inline">
     <el-form-item label="项目名称">
@@ -23,39 +22,44 @@
           width="50">
       </el-table-column>
 
+
       <el-table-column
           prop="pro_name"
           label="项目名称">
       </el-table-column>
-
-
-      <el-table-column
-          prop="applicant_name"
-          label="申请人">
-      </el-table-column>
-      <el-table-column
-          prop="pro_principal_name"
-          label="项目负责人">
-      </el-table-column>
-      <el-table-column
-          prop="dept_principal_name"
-          label="部门负责人">
-      </el-table-column>
-      <el-table-column
-          prop="app_date"
-          label="申请日期">
-      </el-table-column>
-      <el-table-column
-          prop="stateStr"
-          label="状态">
-      </el-table-column>
-      <el-table-column
-          prop="apply_reason"
-          label="申请理由">
-      </el-table-column>
       <el-table-column
           prop="budget"
           label="申报金额">
+      </el-table-column>
+      <el-table-column
+          prop="bid_price"
+          label="中标金额">
+      </el-table-column>
+      <el-table-column
+          prop="bid_winner"
+          label="中标方">
+      </el-table-column>
+
+      <el-table-column
+          prop="bid_date"
+          label="中标日期"
+          width="110"
+      >
+      </el-table-column>
+      <el-table-column
+          prop="bid_linkman"
+          label="标方联系人">
+      </el-table-column>
+
+      <el-table-column
+          prop="bid_tel"
+          label="联系电话"
+          width="150"
+      >
+      </el-table-column>
+      <el-table-column
+          prop="bid_reason"
+          label="中标原因">
       </el-table-column>
 
 
@@ -66,9 +70,9 @@
       >
         <template v-slot="scope">
           <el-row>
-            <el-button type="primary" @click="execute(scope.$index,scope.row)">申请</el-button>
+            <el-button type="primary" @click="agreeTask(scope.$index,scope.row)">同意</el-button>
 
-            <el-button type="danger" @click="cancel(scope.$index, scope.row)">取消</el-button>
+            <el-button type="danger" @click="refuseTask(scope.$index, scope.row)">拒绝</el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -90,25 +94,25 @@
 </template>
 
 <script>
-import axios from "axios";
 import {localGet} from "@/utils";
+import axios from "axios";
 
 export default {
-  // eslint-disable-next-line vue/multi-word-component-names
-  name: "Declare",
+  name: "WinBiding",
   data() {
     return {
       tableData: [{
-        pro_no: '',
         pro_name: '',
-        funds_name: '',
-        applicant_name: '',
-        pro_principal_name: '',
-        dept_principal_name: '',
-        app_date: '',
-        state: '',
-        apply_reason: '',
-        budget: '',
+
+        bid_price: '',
+        bid_winner:'',
+        bid_date:'',
+        bid_linkman: '',
+        bid_tel: '',
+        bid_reason:'',
+        budget:'',
+        pro_principal_name:'',
+        dept_principal_name:''
 
       },],
 
@@ -121,56 +125,49 @@ export default {
     }
   },
   mounted() {
-    this.selectByCondition()
+    this.selectAll();
   },
   methods: {
-    selectByCondition() {
+    selectAll() {
 
-      const _this = this;
+      const _this = this
       const token = localGet(`token`)
       const userId = token.id;
       axios({
         method: "post",
-        url: "/proDeclare/selectProDeclareByCondition",
+        url: "/projectInfo/getTask",
         params: {
-          userId:userId,
-          pro_name: this.info.pro_name,
-          curPage: this.currentPage,
-          pageCount: this.pageCount
-
+          userId
         }
       }).then(function (resp) {
         _this.tableData = resp.data;
       })
     },
 
-    execute(index, row) {
-      //console.log(row.id);
-
+    agreeTask(index,row){
       const _this = this
       const token = localGet(`token`)
       const userId = token.id;
-      console.log(userId)
+      const flag = 1
       axios({
         method: "post",
-        url: "/proDeclare/addExecute",
+        url: "/projectInfo/completeTask",
         params: {
-          userId: userId,
-          proId: row.id
+          userId:userId,
+          projectInfoId:row.id,
+          flag:flag
 
         }
       }).then(function (resp) {
-        if ("success" === resp.data) {
-
-          _this.selectByCondition();
+        if("success"===resp.data){
+          _this.selectAll();
           _this.$message({
-            message: '恭喜你，申请成功！',
+            message: '恭喜你，审核成功！',
             type: 'success'
           });
-
-        } else {
+        }else {
           _this.$message({
-            message: '申请失败',
+            message: '审核失败！',
             type: 'error'
           });
         }
@@ -178,10 +175,7 @@ export default {
 
 
     },
-
-    cancel(index, row) {
-
-    },
+    refuseTask(){},
 
 
     handleCurrentChange(val) {
@@ -194,9 +188,7 @@ export default {
     }
 
 
-  },
-
-
+  }
 }
 </script>
 

@@ -7,7 +7,7 @@ import Menu from "@/components/info/Menu";
 import Role from "@/components/info/Role";
 import Dept from "@/components/info/Dept";
 import User from "@/components/info/User";
-import {localGet} from "@/utils";
+import {localGet, localRemove} from "@/utils";
 import Home from "@/components/info/Home";
 import Locations from "@/components/info/Locations";
 import Flow from "@/components/system/Flow";
@@ -15,6 +15,9 @@ import Declare from "@/components/Biding/Declare";
 import WaitingTask from "@/components/task/WaitingTask";
 import ProjectInfo from "@/components/Biding/ProjectInfo";
 import CheckInfo from "@/components/check/CheckInfo";
+import BiddingReview from "@/components/Biding/BiddingReview";
+import WinBiding from "@/components/Biding/WinBiding";
+import ContractList from "@/components/Contract/ContractList";
 
 
 const routes = [
@@ -101,6 +104,21 @@ const routes = [
                 name: 'CheckInfo',
                 component: CheckInfo
             },
+            {
+                path: '/biddingReview',
+                name: 'BiddingReview',
+                component: BiddingReview
+            },
+            {
+                path: '/winBiding',
+                name: 'WinBiding',
+                component: WinBiding
+            },
+            {
+                path: '/contractList',
+                name: 'ContractList',
+                component: ContractList
+            }
 
 
         ]
@@ -116,11 +134,19 @@ const router = createRouter({
     routes
 })
 
+const time = 86400000
+
 // 未登录则跳转到登录页
 router.beforeEach((to, from, next) => {
     let token = localGet(`token`)
     let startTime = localGet('startTime');
+    const curTime=Date.now();
     console.log(startTime)
+    if(startTime!=null&&curTime-startTime>time){
+        localRemove("token")
+        localRemove("startTime")
+        next({path: '/login'})
+    }
     if (token === null || token.id === null) {
         if (to.path === '/login') {
             next();
