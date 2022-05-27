@@ -1,7 +1,7 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Layout from "@/components/Layout";
 import Login from "@/components/Login";
-import Register from "@/components/Register";
+
 import Layout2 from "@/components/Layout2";
 import Menu from "@/components/info/Menu";
 import Role from "@/components/info/Role";
@@ -11,13 +11,17 @@ import {localGet, localRemove} from "@/utils";
 import Home from "@/components/info/Home";
 import Locations from "@/components/info/Locations";
 import Flow from "@/components/system/Flow";
-import Declare from "@/components/Biding/Declare";
+import Declare from "@/components/biding/Declare";
 import WaitingTask from "@/components/task/WaitingTask";
-import ProjectInfo from "@/components/Biding/ProjectInfo";
+import ProjectInfo from "@/components/biding/ProjectInfo";
 import CheckInfo from "@/components/check/CheckInfo";
-import BiddingReview from "@/components/Biding/BiddingReview";
-import WinBiding from "@/components/Biding/WinBiding";
-import ContractList from "@/components/Contract/ContractList";
+import BiddingReview from "@/components/biding/BiddingReview";
+import WinBiding from "@/components/biding/WinBiding";
+import ContractList from "@/components/contract/ContractList";
+import ContractInfoRev from "@/components/contract/ContractInfoRev";
+import ContractText from "@/components/contract/ContractText";
+import ProcessingTask from "@/components/task/ProcessingTask";
+
 
 
 const routes = [
@@ -33,11 +37,6 @@ const routes = [
                 component: Login
             },
 
-            {
-                path: '/register',
-                name: 'Register',
-                component: Register
-            },
 
 
         ]
@@ -118,8 +117,22 @@ const routes = [
                 path: '/contractList',
                 name: 'ContractList',
                 component: ContractList
-            }
-
+            },
+            {
+                path: '/contractInfoRev',
+                name: 'ContractInfoRev',
+                component: ContractInfoRev
+            },
+            {
+                path: '/contractText',
+                name: 'ContractText',
+                component: ContractText
+            },
+            {
+                path: '/processingTask',
+                name: 'ProcessingTask',
+                component: ProcessingTask
+            },
 
         ]
     }

@@ -63,7 +63,6 @@
       <el-table-column
           label="图片">
           <el-row>
-            <el-button type="primary" @click="dialogVisible1=true">上传图片</el-button>
           </el-row>
       </el-table-column>
 
@@ -73,9 +72,10 @@
       >
         <template v-slot="scope">
           <el-row>
+            <el-button type="primary" @click="dialogVisible1=true">上传</el-button>
             <el-button type="primary" @click="execute(scope.$index,scope.row)">申请</el-button>
 
-            <el-button type="danger" @click="cancel(scope.$index, scope.row)">取消</el-button>
+
           </el-row>
         </template>
       </el-table-column>

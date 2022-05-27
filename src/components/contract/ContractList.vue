@@ -1,5 +1,4 @@
 <template>
-  <!--搜索框和按钮-->
   <el-form :inline="true" :model="info" class="demo-form-inline">
     <el-form-item label="项目名称">
       <el-input v-model="info.pro_name" placeholder="项目名称"></el-input>
@@ -10,43 +9,89 @@
   </el-form>
 
 
-
-  <!--修改数据对话框-->
   <el-dialog
-      title="修改部门"
+      title="填写信息"
       v-model="dialogVisible"
-      width="30%"
+      width="50%"
       :before-close="handleClose">
-    <!--表单-->
-    <el-form ref="form" :model="projectInfo" label-width="80px">
-      <el-form-item label="中标金额">
-        <el-input v-model="projectInfo.bid_price"></el-input>
+
+    <!--表单数据-->
+
+
+    <el-form
+        :inline="true"
+        :model="contract"
+        class="demo-form-inline"
+        :label-position="left"
+        :label-width="100"
+    >
+
+
+      <el-form-item label="标名称" >
+        <el-input v-model="contract.packageName" placeholder="标名称"></el-input>
       </el-form-item>
 
-      <el-form-item label="中标方">
-        <el-input v-model="projectInfo.bid_winner"></el-input>
-      </el-form-item>
-      <el-form-item label="中标日期">
-        <el-input v-model="projectInfo.bid_date"></el-input>
-      </el-form-item>
-      <el-form-item label="中标联系人">
-        <el-input v-model="projectInfo.bid_linkman"></el-input>
+      <el-form-item label="保修期限">
+        <el-input v-model="contract.baoxqx" placeholder="xx年">
+          <template v-slot:append>年</template>
+        </el-input>
       </el-form-item>
 
-      <el-form-item label="联系电话">
-        <el-input v-model="projectInfo.bid_tel"></el-input>
+      <el-form-item label="合同金额">
+        <el-input v-model="contract.amount" placeholder="元">
+          <template v-slot:append>元</template>
+        </el-input>
       </el-form-item>
 
-      <el-form-item label="中标原因">
-        <el-input type="textarea" v-model="projectInfo.bid_reason"></el-input>
+      <el-form-item label="交货日期">
+        <el-input v-model="contract.jiaohrq" placeholder="xxxx-xx-xx"></el-input>
       </el-form-item>
+      <el-form-item label="甲方">
+        <el-input v-model="contract.jiaf" placeholder="甲方"></el-input>
+      </el-form-item>
+      <el-form-item label="甲方电话">
+        <el-input v-model="contract.tel_jiaf" placeholder="甲方电话"></el-input>
+      </el-form-item>
+
+
+      <el-form-item label="乙方">
+        <el-input v-model="contract.yif" placeholder="乙方"></el-input>
+      </el-form-item>
+      <el-form-item label="乙方电话">
+        <el-input v-model="contract.tel_yif" placeholder="乙方电话"></el-input>
+      </el-form-item>
+
+      <el-form-item label="丙方">
+        <el-input v-model="contract.bingf" placeholder="丙方"></el-input>
+      </el-form-item>
+
+      <el-form-item label="丙方电话">
+        <el-input v-model="contract.tel_bingf" placeholder="丙方电话"></el-input>
+      </el-form-item>
+
+
+<!--      <el-form-item label="经办日前" >-->
+<!--        <el-input v-model="contract.jbrq" placeholder="xxxx-xx-xx"></el-input>-->
+<!--      </el-form-item>-->
+
+
+      <br>
       <el-form-item>
         <el-button type="primary" @click="update()">提交</el-button>
         <el-button @click="dialogVisible = false">取消</el-button>
       </el-form-item>
+
     </el-form>
 
+
+    <!--    <template #footer>-->
+    <!--      <span class="dialog-footer">-->
+    <!--      <el-button @click="dialogVisible = false">取 消</el-button>-->
+    <!--      <el-button type="primary" @click="dialogVisible = false">确 定</el-button>-->
+    <!--      </span>-->
+    <!--    </template>-->
   </el-dialog>
+
 
   <!--展示表格-->
   <div style="height: 50%">
@@ -54,71 +99,45 @@
         :data="tableData"
         stripe
         style="width: 100%"
+
         @selection-change="handleSelectionChange">
       <el-table-column
           type="index"
           width="50">
       </el-table-column>
 
-
+      <el-table-column
+          prop="contract_name"
+          label="合同名称">
+      </el-table-column>
       <el-table-column
           prop="pro_name"
           label="项目名称">
       </el-table-column>
 
-      <el-table-column
-          prop="bid_price"
-          label="中标金额">
-      </el-table-column>
-      <el-table-column
-          prop="bid_winner"
-          label="中标方">
-      </el-table-column>
 
       <el-table-column
-          prop="bid_date"
-          label="中标日期"
-          width="110"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="bid_linkman"
-          label="标方联系人">
+          prop="applicant"
+          label="申请人">
       </el-table-column>
 
-      <el-table-column
-          prop="bid_tel"
-          label="联系电话"
-          width="150"
-      >
-      </el-table-column>
-      <el-table-column
-          prop="bid_reason"
-          label="中标原因">
-      </el-table-column>
-      <el-table-column
-          prop="budget"
-          label="申报金额">
-      </el-table-column>
-      <el-table-column
-          prop="pro_principal_name"
-          label="项目负责人">
-      </el-table-column>
-      <el-table-column
-          prop="dept_principal_name"
-          label="部门负责人">
-      </el-table-column>
 
       <el-table-column
+          prop="dept_name"
+          label="部门名称">
+      </el-table-column>
+
+
+      <el-table-column
+          fixed="right"
           label="操作"
           width="200"
-
       >
         <template v-slot="scope">
           <el-row>
             <el-button type="primary" @click="execute(scope.$index,scope.row)">申请</el-button>
 
-            <el-button type="danger" @click="updateInfo(scope.$index, scope.row)">填写信息</el-button>
+            <el-button type="danger" @click="updateContract(scope.$index, scope.row)">填写信息</el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -137,46 +156,41 @@
         :total="totalCount">
     </el-pagination>
   </div>
-
 </template>
 
 <script>
-import axios from "axios";
 import {localGet} from "@/utils";
+import axios from "axios";
 
 export default {
-  name: "ProjectInfo",
-  data(){
-    return{
-      dialogVisible:false,
-
-      projectInfo:{
-        id:'',
-        bid_price: '',
-        bid_winner:'',
-        bid_date:'',
-        bid_linkman: '',
-        bid_tel: '',
-        bid_reason:'',
+  name: "ContractList",
+  data() {
+    return {
+      dialogVisible: false,
+      contract: {
+        id: '',
+        packageName: '',
+        baoxqx: '',
+        amount: '',
+        jiaohrq: '',
+        jiaf: '',
+        yif: '',
+        bingf: '',
+        tel_jiaf: '',
+        tel_yif: '',
+        tel_bingf: '',
+        jbrq: '',
       },
 
       tableData: [{
+        contract_name: '',
         pro_name: '',
-
-        bid_price: '',
-        bid_winner:'',
-        bid_date:'',
-        bid_linkman: '',
-        bid_tel: '',
-        bid_reason:'',
-        budget:'',
-        pro_principal_name:'',
-        dept_principal_name:''
-
+        applicant: '',
+        dept_name: '',
       },],
 
-      info:{
-        pro_name:'',
+      info: {
+        pro_name: '',
       },
       currentPage: 1,
       pageCount: 5,
@@ -184,9 +198,9 @@ export default {
     }
   },
   mounted() {
-    this.selectByCondition()
+    this.selectByCondition();
   },
-  methods:{
+  methods: {
     selectByCondition() {
 
       const _this = this;
@@ -194,31 +208,31 @@ export default {
       const userId = token.id;
       axios({
         method: "post",
-        url: "/projectInfo/selectProjectInfoByCondition",
+        url: "/contract/selectContractByCondition",
         params: {
           pro_name: this.info.pro_name,
           curPage: this.currentPage,
           pageCount: this.pageCount,
-          userId:userId
+          userId: userId
 
         }
       }).then(function (resp) {
         _this.tableData = resp.data;
       })
     },
+    execute(index, row) {
+      //console.log(row.id);
 
-    execute(index,row){
-      console.log(row.id);
       const _this = this
       const token = localGet(`token`)
       const userId = token.id;
       //console.log(userId)
       axios({
         method: "post",
-        url: "/projectInfo/addApply",
+        url: "/contract/addApply",
         params: {
           userId : userId,
-          projectInfoId: row.id
+          contractId: row.id
 
         }
       }).then(function (resp){
@@ -244,19 +258,17 @@ export default {
       })
 
     },
-
-    updateInfo(index,row){
-      this.projectInfo=row
-      this.dialogVisible=true
-
+    updateContract(index, row) {
+      this.contract = row
+      this.dialogVisible = true
     },
-
     update(){
+      //console.log(this.contract)
       const _this = this;
       axios({
         method: "post",
-        url: "/projectInfo/updateProjectInfo",
-        params: this.projectInfo
+        url: "/contract/updateById",
+        params: this.contract
       }).then(function (resp) {
 
         if (resp.data === "success") {
@@ -267,11 +279,15 @@ export default {
             message: '恭喜你，修改成功！',
             type: 'success'
           });
+        }else {
+          _this.$message({
+            message: '修改失败！',
+            type: 'error'
+          });
         }
 
       })
     },
-
 
     handleCurrentChange(val) {
       console.log(`当前页: ${val}`);
@@ -279,26 +295,22 @@ export default {
       this.selectByCondition();
     },
 
-    handleSelectionChange(){},
-    //对话框表单的函数
+    handleSelectionChange() {
+    },
+
     handleClose(done) {
-      const _this = this
       this.$confirm('确认关闭？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       })
           .then(_ => {
-            _this.selectByCondition()
             done();
           })
           .catch(_ => {
           });
     },
-
-
-  },
-
+  }
 }
 </script>
 

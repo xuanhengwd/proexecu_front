@@ -44,7 +44,7 @@
               @click="updateFlow(scope.$index,scope.row)"
               type="text"
               size="small">
-            编辑
+            查看
           </el-button>
 
           <el-button

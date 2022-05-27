@@ -1,32 +1,66 @@
 <template>
-  <div style="display: flex">
-    <el-card class="box-card" style="width: 30%">
-      <template #header>
-      <div class="clearfix">
-        <span>我的待办</span>
-      </div>
-      </template>
-      <div v-for="o in 4" :key="o" class="text item">
-        {{'列表内容 ' + o }}
-      </div>
-    </el-card>
 
-    <el-card class="box-card" style="width: 60%;margin-left: 5%">
-      <template #header>
+
+  <el-card class="box-card" style="width: 100%" shadow="never">
+    <template #header>
       <div class="clearfix">
         <span>快速入口</span>
       </div>
-      </template>
-      <div class="text item">
-        <el-button type="primary" style="width: 120px;height: 50px">上传标书</el-button>
-        <el-button type="primary" style="width: 120px;height: 50px">填写合同</el-button>
-        <el-button type="primary" style="width: 120px;height: 50px">进度查询</el-button>
-        <el-button type="primary" style="width: 120px;height: 50px">快速入口</el-button>
-        <el-button type="primary" style="width: 120px;height: 50px">快速入口</el-button>
-      </div>
-    </el-card>
+    </template>
+    <div class="text item">
+      <el-button type="primary" style="width: 120px;height: 50px">采购信息</el-button>
+      <el-button type="primary" style="width: 120px;height: 50px">中标信息</el-button>
+      <el-button type="primary" style="width: 120px;height: 50px">合同填写</el-button>
+      <el-button type="primary" style="width: 120px;height: 50px">合同上传</el-button>
+      <el-button type="primary" style="width: 120px;height: 50px">验收申请</el-button>
+    </div>
+  </el-card>
 
-  </div>
+
+  <el-tabs type="border-card" style="width: 100%;height: 60% ;margin-top: 15px">
+
+    <el-tab-pane label="待办任务">
+
+      <el-table
+          :data="tableData"
+          style="width: 100%">
+        <el-table-column
+            prop="pro_no"
+            label="项目名称"
+            width="180">
+        </el-table-column>
+        <el-table-column
+            prop="bus_type"
+            label="业务类型"
+            width="180">
+        </el-table-column>
+        <el-table-column
+            prop="audit_time"
+            label="更新时间">
+        </el-table-column>
+
+        <el-table-column
+            prop="audit_process"
+            label="进度">
+        </el-table-column>
+        <el-table-column
+            label="操作">
+          <template v-slot="scope">
+            <el-row>
+              <el-button type="primary" @click="updateById(scope.$index,scope.row)">详情</el-button>
+            </el-row>
+          </template>
+        </el-table-column>
+
+      </el-table>
+
+    </el-tab-pane>
+
+    <el-tab-pane label="在办任务">在办任务</el-tab-pane>
+
+  </el-tabs>
+
+
   <div></div>
 
 </template>
@@ -37,6 +71,31 @@ import axios from "axios";
 export default {
   // eslint-disable-next-line vue/multi-word-component-names
   name: "Home",
+  data() {
+    return {
+      tableData: [{
+        pro_no: '电脑采购',
+        bus_type: '招标审核',
+        audit_time: '2022-05-22',
+        audit_process:"未审"
+      }, {
+        pro_no: '键盘采购',
+        bus_type: '合同审核',
+        audit_time: '2022-05-22',
+        audit_process:"未审"
+      }, {
+        pro_no: '鼠标采购',
+        bus_type: '验收审核',
+        audit_time: '2022-05-22',
+        audit_process:"未审"
+      }, {
+        pro_no: '显示器采购',
+        bus_type: '招标审核',
+        audit_time: '2022-05-22',
+        audit_process:"未审"
+      }]
+    }
+  }
 }
 </script>
 

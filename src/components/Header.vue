@@ -4,7 +4,7 @@
     <div style="display: flex">
     <!--  content="this is content, this is content, this is content"-->
     <!--  v-model:visible="visible"-->
-    <h2 style="width: 90%; margin-top: 15px">欢迎使用</h2>
+    <h2 style="width: 90%; margin-top: 15px">采购执行系统</h2>
     <el-popover
         placement="bottom"
         title="个人信息:"
@@ -19,8 +19,12 @@
       <el-divider></el-divider>
       <h4>所属部门：{{ user.deptName }}</h4>
 
+
+        <el-button type="primary" round >个人信息</el-button>
       <el-button type="danger" round @click="signOut">退出系统</el-button>
       </div>
+
+
       <template #reference>
         <div style="width:10%;float: right">
           <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png" size="large"

@@ -5,6 +5,8 @@
       <el-menu
           default-active="2"
           class="el-menu-vertical-demo">
+
+
         <el-menu-item @click="returnHome">
           <template #title>
             <el-icon>
@@ -53,8 +55,8 @@
             <span>招标模块</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="3-1" @click="DeclareInfo">申报信息</el-menu-item>
-            <el-menu-item index="3-2" @click="getBiding">申报信息审核</el-menu-item>
+            <el-menu-item index="3-1" @click="DeclareInfo">采购信息</el-menu-item>
+            <el-menu-item index="3-2" @click="getBiding">采购信息审核</el-menu-item>
             <el-menu-item index="3-3" @click="ProjectInfos">中标信息</el-menu-item>
             <el-menu-item index="3-4" @click="getWinBiding">中标审核</el-menu-item>
           </el-menu-item-group>
@@ -68,9 +70,9 @@
             <span>合同签订</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="4-1" @click="getContractList">合同明细信息</el-menu-item>
-            <el-menu-item index="4-2">合同明细审核</el-menu-item>
-            <el-menu-item index="4-3">合同信息</el-menu-item>
+            <el-menu-item index="4-1" @click="getContractList">合同信息填写</el-menu-item>
+            <el-menu-item index="4-2" @click="getContractInfoRev">合同信息审核</el-menu-item>
+            <el-menu-item index="4-3" @click="getContractText">合同上传</el-menu-item>
             <el-menu-item index="4-4">合同审核</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
@@ -132,11 +134,13 @@ export default {
   name: "Catalogue",
   methods: {
 
-    processingTask(){},
+    processingTask(){
+      this.$router.push({name: 'ProcessingTask'});
+    },
 
 
     waitingTask(){
-      this.$router.push({name: 'WaitingTask'});
+      //this.$router.push({name: 'WaitingTask'});
     },
 
 
@@ -187,7 +191,13 @@ export default {
     },
     getContractList(){
       this.$router.push({name: 'ContractList'});
-    }
+    },
+    getContractInfoRev(){
+      this.$router.push({name: 'ContractInfoRev'});
+    },
+    getContractText(){
+      this.$router.push({name: 'ContractText'});
+    },
 
 
     // handleOpen(key, keyPath) {

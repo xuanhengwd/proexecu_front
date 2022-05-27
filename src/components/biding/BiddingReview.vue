@@ -9,6 +9,37 @@
     </el-form-item>
   </el-form>
 
+
+  <el-dialog
+      title="理由"
+      v-model="dialogVisible"
+      width="50%"
+      :before-close="handleClose">
+
+    <!--表单数据-->
+    <el-form
+        :model="formPO"
+        :label-position="left"
+        label-width="80px"
+    >
+
+      <el-form-item label="拒绝理由">
+        <el-input type="textarea" v-model="formPO.reason"></el-input>
+      </el-form-item>
+
+    </el-form>
+
+
+    <template #footer>
+          <span class="dialog-footer">
+
+          <el-button type="primary" >确定</el-button>
+
+            <el-button type="danger" @click="dialogVisible = false">取消</el-button>
+          </span>
+    </template>
+  </el-dialog>
+
   <!--展示表格-->
   <div style="height: 50%">
     <el-table
@@ -96,6 +127,11 @@ export default {
   name: "BiddingReview",
   data() {
     return {
+      dialogVisible:false,
+
+      formPO:{
+        reason:'',
+      },
       tableData: [{
         pro_no: '',
         pro_name: '',
@@ -169,7 +205,10 @@ export default {
 
 
     },
-    refuseTask(){},
+    refuseTask(index,row){
+      console.log(row.id)
+      this.dialogVisible=true
+    },
 
 
     handleCurrentChange(val) {
@@ -179,7 +218,19 @@ export default {
     },
 
     handleSelectionChange() {
-    }
+    },
+    handleClose(done) {
+      this.$confirm('确认关闭？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+          .then(_ => {
+            done();
+          })
+          .catch(_ => {
+          });
+    },
 
 
   }
