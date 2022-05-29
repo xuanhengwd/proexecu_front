@@ -4,50 +4,10 @@
       <el-input v-model="info.pro_name" placeholder="项目名称"></el-input>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" @click="selectByCondition">查询</el-button>
+      <el-button type="primary">查询</el-button>
     </el-form-item>
   </el-form>
 
-  <el-row>
-    <el-button type="primary" @click="downloadText">
-      合同模板下载
-      <el-icon class="el-icon--right"><Download /></el-icon>
-    </el-button>
-  </el-row>
-
-  <el-dialog
-      title="上传文件"
-      v-model="dialogVisible1"
-      width="30%"
-      :before-close="handleClose">
-
-    <div>
-
-      <el-upload
-          class="upload-demo"
-          action="http://localhost:8080/contractText/uploadFile"
-          :data="{id:contract.id}"
-          :before-upload="beforeUpload"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          multiple
-          :limit="1"
-          :on-exceed="handleExceed"
-      >
-        <el-button size="small" type="primary">点击上传</el-button>
-        <template #tip>
-          <div class="el-upload__tip">只能上传word文件，且不超过30M</div>
-        </template>
-      </el-upload>
-
-    </div>
-    <template #footer>
-        <span class="dialog-footer">
-        <el-button @click="dialogVisible1 = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible1 = false">确 定</el-button>
-        </span>
-    </template>
-  </el-dialog>
 
   <el-dialog
       title="合同信息"
@@ -109,6 +69,15 @@
       </el-form-item>
 
 
+      <!--      <el-form-item label="经办日前" >-->
+      <!--        <el-input v-model="contract.jbrq" placeholder="xxxx-xx-xx"></el-input>-->
+      <!--      </el-form-item>-->
+
+      <!--      <br>-->
+      <!--      <el-form-item>-->
+      <!--        <el-button type="primary" @click="agreeTask()">同意</el-button>-->
+      <!--        <el-button @click="dialogVisible = false">拒绝</el-button>-->
+      <!--      </el-form-item>-->
 
     </el-form>
 
@@ -116,10 +85,13 @@
     <template #footer>
           <span class="dialog-footer">
 
-            <el-button type="danger" @click="dialogVisible = false">关闭</el-button>
+          <el-button type="primary" @click="agreeTask">同意</el-button>
+
+            <el-button type="danger" @click="dialogVisible = false">拒绝</el-button>
           </span>
     </template>
   </el-dialog>
+
   <!--展示表格-->
   <div style="height: 50%">
     <el-table
@@ -162,10 +134,9 @@
       >
         <template v-slot="scope">
           <el-row>
-            <el-button type="primary" @click="getInfo(scope.$index,scope.row)">详情</el-button>
+            <el-button type="primary" @click="downloadFile(scope.$index,scope.row)">文本下载</el-button>
+            <el-button type="primary"  @click="review(scope.$index,scope.row)">审批</el-button>
 
-            <el-button type="primary" @click="uploadText(scope.$index,scope.row)">上传</el-button>
-            <el-button type="primary" @click="execute(scope.$index,scope.row)">申请</el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -183,6 +154,8 @@
         :total="totalCount">
     </el-pagination>
   </div>
+
+
 </template>
 
 <script>
@@ -190,12 +163,28 @@ import {localGet} from "@/utils";
 import axios from "axios";
 
 export default {
-  name: "ContractText",
+  name: "ContractRev",
   data() {
     return {
-      dialogVisible1:false,
       dialogVisible: false,
-      uploadUrl:'http://localhost:8080/contractText/uploadFile',
+      tableData: [{
+        contract_name: '',
+        pro_name: '',
+        applicant: '',
+        dept_name: '',
+        id: '',
+        packageName: '',
+        baoxqx: '',
+        amount: '',
+        jiaohrq: '',
+        jiaf: '',
+        yif: '',
+        bingf: '',
+        tel_jiaf: '',
+        tel_yif: '',
+        tel_bingf: '',
+        jbrq: '',
+      },],
       contract: {
         id: '',
         packageName: '',
@@ -209,14 +198,8 @@ export default {
         tel_yif: '',
         tel_bingf: '',
         jbrq: '',
+        contract_path:''
       },
-
-      tableData: [{
-        contract_name: '',
-        pro_name: '',
-        applicant: '',
-        dept_name: '',
-      },],
 
       info: {
         pro_name: '',
@@ -226,86 +209,87 @@ export default {
       totalCount: 5
     }
   },
+
   mounted() {
-    this.selectByCondition();
+    this.selectAll();
   },
   methods: {
-    selectByCondition() {
+    selectAll() {
 
-      const _this = this;
+      const _this = this
       const token = localGet(`token`)
       const userId = token.id;
       axios({
         method: "post",
-        url: "/contract/selectContractByCondition",
+        url: "/contractText/getTask",
         params: {
-          pro_name: this.info.pro_name,
-          curPage: this.currentPage,
-          pageCount: this.pageCount,
-          userId: userId
-
+          userId
         }
       }).then(function (resp) {
         _this.tableData = resp.data;
       })
     },
 
-    //模板下载
-    downloadText(){
-      const a = document.createElement("a"); //创建一个<a></a>标签
-      a.href = "/static/合同模板.doc"; // 给a标签的href属性值加上地址，注意，这里是绝对路径，不用加 点.
-      a.download = "合同模板.doc"; //设置下载文件文件名，这里加上.xlsx指定文件类型，pdf文件就指定.fpd即可
-      a.style.display = "none"; // 障眼法藏起来a标签
-      document.body.appendChild(a); // 将a标签追加到文档对象中
-      a.click(); // 模拟点击了a标签，会触发a标签的href的读取，浏览器就会自动下载了
-      a.remove(); // 一次性的，用完就删除a标签
-    },
-    uploadText(index,row){
-      this.dialogVisible1=true
-      this.contract.id = row.id
-      //console.log(row.id);
-    },
-    execute(index, row) {
-      //console.log(row.id);
 
+    review(index, row) {
+      this.contract = row
+      this.dialogVisible = true
+
+    },
+    agreeTask() {
       const _this = this
       const token = localGet(`token`)
       const userId = token.id;
-      //console.log(userId)
+      const flag = 1
       axios({
         method: "post",
-        url: "/contractText/addApply",
+        url: "/contractText/completeTask",
         params: {
-          userId : userId,
-          contractId: row.id
+          userId: userId,
+          contractId: this.contract.id,
+          flag: flag
 
         }
-      }).then(function (resp){
-        if("success"===resp.data){
-
-          _this.selectByCondition()
+      }).then(function (resp) {
+        if ("success" === resp.data) {
+          _this.selectAll();
+          _this.dialogVisible=false
           _this.$message({
-            message: '恭喜你，申请成功！',
+            message: '恭喜你，审核成功！',
             type: 'success'
-          })
-
-        }else if("empty"===resp.data){
+          });
+        } else {
           _this.$message({
-            message: '请上传文件！',
+            message: '审核失败！',
             type: 'error'
-          })
-        }else {
-          _this.$message({
-            message: '请勿重复申请！',
-            type: 'error'
-          })
+          });
         }
       })
 
+
     },
-    getInfo(index, row) {
-      this.contract = row
-      this.dialogVisible = true
+    refuseTask() {
+    },
+
+    downloadFile(index,row){
+
+      axios({
+        method: "post",
+        url: "/contractText/getFilePath",
+        params: {
+          id:row.id
+        }
+      }).then(function (resp) {
+        console.log(resp.data)
+        const a = document.createElement("a"); //创建一个<a></a>标签
+        a.href = resp.data; // 给a标签的href属性值加上地址，注意，这里是绝对路径，不用加 点.
+        a.download = "合同模板.doc"; //设置下载文件文件名，这里加上.xlsx指定文件类型，pdf文件就指定.fpd即可
+        a.style.display = "none"; // 障眼法藏起来a标签
+        document.body.appendChild(a); // 将a标签追加到文档对象中
+        a.click(); // 模拟点击了a标签，会触发a标签的href的读取，浏览器就会自动下载了
+        a.remove(); // 一次性的，用完就删除a标签
+
+      })
     },
 
 
@@ -332,37 +316,8 @@ export default {
     },
 
 
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 1 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`);
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${ file.name }？`);
-    },
-    beforeUpload(file) {
-      console.log(file.type)
-      const isDoc = file.type === 'application/msword';
-      const isDocx = file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-      // console.log("doc格式"+isDoc)
-      // console.log("docx格式"+isDocx)
-      const isLt30M = file.size / 1024 / 1024 < 30;
-      //
-      if (!isDoc&&!isDocx) {
-        this.$message.error('上传文件只能是 doc/docx 格式!');
-      }
-      if (!isLt30M) {
-        this.$message.error('上传文件大小不能超过 30MB!');
-      }
-      return  (isDocx||isDoc)&&isLt30M;
-
-    }
-
   }
+
 }
 </script>
 

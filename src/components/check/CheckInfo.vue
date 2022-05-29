@@ -8,36 +8,76 @@
       <el-button type="primary" @click="selectByCondition">查询</el-button>
     </el-form-item>
   </el-form>
-  <!--上传文件对话框-->
+
+  <!--修改数据对话框-->
   <el-dialog
-      title="上传文件"
-      v-model="dialogVisible1"
+      title="信息填写"
+      v-model="dialogVisible"
       width="30%"
       :before-close="handleClose">
+    <!--表单-->
+    <el-form ref="form" :model="contractList" label-width="80px">
 
-    <div>
+      <el-form-item label="型号">
+        <el-input v-model="contractList.model"></el-input>
+      </el-form-item>
 
-      <el-upload
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :file-list="fileList"
-          list-type="picture">
-        <el-button size="small" type="primary">点击上传</el-button>
-        <template #tip>
-        <div  class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
-        </template>
-      </el-upload>
+      <el-form-item label="数量">
+        <el-input v-model="contractList.all_count"></el-input>
+      </el-form-item>
+      <el-form-item label="单价">
+        <el-input v-model="contractList.priceCNY">
+          <template v-slot:append>元</template>
+        </el-input>
+      </el-form-item>
 
-    </div>
+      <el-form-item label="总价">
+        <el-input v-model="contractList.total_price">
+          <template v-slot:append>元</template>
+        </el-input>
+      </el-form-item>
+
+      <el-form-item label="供货商">
+        <el-input v-model="contractList.gonghuoshang"></el-input>
+      </el-form-item>
+
+
+      <el-form-item label="备注">
+        <el-input type="textarea" v-model="contractList.beizhu"></el-input>
+      </el-form-item>
+
+      <!--      <el-form-item>-->
+      <!--        <el-button type="primary" @click="update()">提交</el-button>-->
+      <!--        <el-button @click="dialogVisible = false">取消</el-button>-->
+      <!--      </el-form-item>-->
+    </el-form>
+
+    <!--    上传图片-->
+    <el-upload
+        action="http://localhost:8080/check/uploadImg"
+        list-type="picture-card"
+        :data="{id:contractList.id}"
+        :on-preview="handlePictureCardPreview"
+        :on-remove="handleRemove">
+      <el-icon>
+        <Plus/>
+      </el-icon>
+    </el-upload>
+    <el-dialog v-model="dialogVisible1">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
+
     <template #footer>
-        <span class="dialog-footer">
-        <el-button @click="dialogVisible1 = false">取 消</el-button>
-        <el-button type="primary" @click="uploadExcle">确 定</el-button>
-        </span>
+      <span class="dialog-footer">
+           <el-button type="primary" @click="update()">提交</el-button>
+    <el-button @click="dialogVisible = false">取消</el-button>
+      </span>
     </template>
+
+
   </el-dialog>
+
+
   <!--展示表格-->
   <div style="height: 50%">
     <el-table
@@ -51,31 +91,32 @@
       </el-table-column>
 
       <el-table-column
-          prop="pro_no"
-          label="项目编号">
+          prop="contract_name"
+          label="合同名称">
       </el-table-column>
       <el-table-column
           prop="pro_name"
           label="项目名称">
       </el-table-column>
-
-
       <el-table-column
-          label="图片">
-          <el-row>
-          </el-row>
+          prop="applicant"
+          label="申请人">
+      </el-table-column>
+      <el-table-column
+          prop="dept_name"
+          label="部门名称">
       </el-table-column>
 
       <el-table-column
           label="操作"
           width="200"
+
       >
         <template v-slot="scope">
           <el-row>
-            <el-button type="primary" @click="dialogVisible1=true">上传</el-button>
             <el-button type="primary" @click="execute(scope.$index,scope.row)">申请</el-button>
 
-
+            <el-button type="danger" @click="updateInfo(scope.$index, scope.row)">填写信息</el-button>
           </el-row>
         </template>
       </el-table-column>
@@ -97,25 +138,38 @@
 </template>
 
 <script>
+import {localGet} from "@/utils";
+import axios from "axios";
+
 export default {
   name: "CheckInfo",
   data() {
     return {
-      fileList: [{name: 'food.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}, {name: 'food2.jpeg', url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'}],
-      dialogVisible1:false,
-      tableData: [{
-        pro_no: '1001',
-        pro_name: '电脑采购',
-        funds_name: '',
-        applicant_name: '',
-        pro_principal_name: '',
-        dept_principal_name: '',
-        app_date: '',
-        state: '',
-        apply_reason: '',
-        budget: '',
-        img:''
+      fileList: [{
+        name: 'food.jpeg',
+        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+      }, {
+        name: 'food2.jpeg',
+        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
+      }],
+      dialogVisible: false,
+      dialogImageUrl: '',
+      dialogVisible1: false,
+      contractList: {
+        id: "",
+        model: '',
+        all_count: '',
+        priceCNY: '',
+        total_price: '',
+        gonghuoshang: '',
+        beizhu: ''
 
+      },
+      tableData: [{
+        contract_name: '',
+        pro_name: '',
+        applicant: '',
+        dept_name: ''
       },],
 
       info: {
@@ -126,14 +180,129 @@ export default {
       totalCount: 5
     }
   },
-  methods:{
-    uploadImg(){},
+  mounted() {
+    this.selectByCondition()
+  },
+  methods: {
+
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
-    handlePreview(file) {
-      console.log(file);
-    }
+    handlePictureCardPreview(file) {
+      console.log(file.url)
+      this.dialogImageUrl = file.url;
+      this.dialogVisible1 = true;
+    },
+    selectByCondition() {
+
+      const _this = this;
+      const token = localGet(`token`)
+      const userId = token.id;
+      axios({
+        method: "post",
+        url: "/check/selectContractByCondition",
+        params: {
+          pro_name: this.info.pro_name,
+          curPage: this.currentPage,
+          pageCount: this.pageCount,
+          userId: userId
+        }
+      }).then(function (resp) {
+        console.log(resp.data)
+        _this.tableData = resp.data;
+      })
+    },
+
+    execute(index, row) {
+
+      const _this = this
+      const token = localGet(`token`)
+      const userId = token.id;
+      //console.log(userId)
+      axios({
+        method: "post",
+        url: "/check/addApply",
+        params: {
+          userId: userId,
+          contractListId: row.id
+
+        }
+      }).then(function (resp) {
+        if ("success" === resp.data) {
+
+          _this.selectByCondition()
+          _this.$message({
+            message: '恭喜你，申请成功！',
+            type: 'success'
+          })
+
+        } else if ("empty" === resp.data) {
+          _this.$message({
+            message: '请填写信息！',
+            type: 'error'
+          })
+        } else {
+          _this.$message({
+            message: '请勿重复申请！',
+            type: 'error'
+          })
+        }
+      })
+
+    },
+
+    updateInfo(index, row) {
+      this.contractList = row
+      this.dialogVisible = true
+
+    },
+
+    update() {
+      const _this = this;
+      axios({
+        method: "post",
+        url: "/check/updateContractList",
+        params: this.contractList
+      }).then(function (resp) {
+
+        if (resp.data === "success") {
+          //修改成功
+          _this.selectByCondition();
+          _this.dialogVisible = false;
+          _this.$message({
+            message: '恭喜你，修改成功！',
+            type: 'success'
+          });
+        }
+
+      })
+    },
+
+
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      this.currentPage = val;
+      this.selectByCondition();
+    },
+
+    handleSelectionChange() {
+    },
+    //对话框表单的函数
+    handleClose(done) {
+      const _this = this
+      this.$confirm('确认关闭？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+          .then(_ => {
+            _this.selectByCondition()
+            done();
+          })
+          .catch(_ => {
+          });
+    },
+
   }
 }
 </script>

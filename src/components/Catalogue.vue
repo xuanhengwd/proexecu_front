@@ -73,7 +73,7 @@
             <el-menu-item index="4-1" @click="getContractList">合同信息填写</el-menu-item>
             <el-menu-item index="4-2" @click="getContractInfoRev">合同信息审核</el-menu-item>
             <el-menu-item index="4-3" @click="getContractText">合同上传</el-menu-item>
-            <el-menu-item index="4-4">合同审核</el-menu-item>
+            <el-menu-item index="4-4" @click="getContractRev">合同审核</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
 
@@ -86,7 +86,7 @@
           </template>
           <el-menu-item-group>
             <el-menu-item index="5-1" @click="Getcheck">验收申请</el-menu-item>
-            <el-menu-item index="5-1" @click="Getcheck">验收审核</el-menu-item>
+            <el-menu-item index="5-2" @click="getCheckRev">验收审核</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
 
@@ -98,16 +98,10 @@
             <span>查询统计</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="6-1">进度查询</el-menu-item>
-          </el-menu-item-group>
+            <el-menu-item index="6-1">预算信息</el-menu-item>
+            <el-menu-item index="6-2">申报信息</el-menu-item>
 
-          <el-sub-menu index="6-2">
-            <template #title>表单查询</template>
-            <el-menu-item index="6-2-1">经费预算表</el-menu-item>
-            <el-menu-item index="6-2-2">采购申报表</el-menu-item>
-            <el-menu-item index="6-2-3">项目信息表</el-menu-item>
-            <el-menu-item index="6-2-4">合同表</el-menu-item>
-          </el-sub-menu>
+          </el-menu-item-group>
 
         </el-sub-menu>
 
@@ -198,6 +192,12 @@ export default {
     getContractText(){
       this.$router.push({name: 'ContractText'});
     },
+    getContractRev(){
+      this.$router.push({name: 'ContractRev'});
+    },
+    getCheckRev(){
+      this.$router.push({name: 'CheckRev'});
+    }
 
 
     // handleOpen(key, keyPath) {

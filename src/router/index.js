@@ -21,6 +21,8 @@ import ContractList from "@/components/contract/ContractList";
 import ContractInfoRev from "@/components/contract/ContractInfoRev";
 import ContractText from "@/components/contract/ContractText";
 import ProcessingTask from "@/components/task/ProcessingTask";
+import ContractRev from "@/components/contract/ContractRev";
+import CheckRev from "@/components/check/CheckRev";
 
 
 
@@ -132,6 +134,16 @@ const routes = [
                 path: '/processingTask',
                 name: 'ProcessingTask',
                 component: ProcessingTask
+            },
+            {
+                path: '/contractRev',
+                name: 'ContractRev',
+                component: ContractRev
+            },
+            {
+                path: '/checkRev',
+                name: 'CheckRev',
+                component: CheckRev
             },
 
         ]
