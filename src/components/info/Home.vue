@@ -8,11 +8,11 @@
       </div>
     </template>
     <div class="text item">
-      <el-button type="primary" style="width: 120px;height: 50px">采购信息</el-button>
-      <el-button type="primary" style="width: 120px;height: 50px">中标信息</el-button>
-      <el-button type="primary" style="width: 120px;height: 50px">合同填写</el-button>
-      <el-button type="primary" style="width: 120px;height: 50px">合同上传</el-button>
-      <el-button type="primary" style="width: 120px;height: 50px">验收申请</el-button>
+      <el-button type="primary" @click="DeclareInfo" style="width: 120px;height: 50px">采购信息</el-button>
+      <el-button type="primary" @click="ProjectInfos" style="width: 120px;height: 50px">中标信息</el-button>
+      <el-button type="primary" @click="getContractList" style="width: 120px;height: 50px">合同填写</el-button>
+      <el-button type="primary" @click="getContractText" style="width: 120px;height: 50px">合同上传</el-button>
+      <el-button type="primary" @click="getContractRev" style="width: 120px;height: 50px">验收申请</el-button>
     </div>
   </el-card>
 
@@ -95,6 +95,24 @@ export default {
         audit_process:"未审"
       }]
     }
+  },
+  methods:{
+    DeclareInfo(){
+      this.$router.push({name: 'Declare'});
+    },
+    ProjectInfos(){
+      this.$router.push({name: 'ProjectInfo'});
+    },
+    getContractList(){
+      this.$router.push({name: 'ContractList'});
+    },
+    getContractText(){
+      this.$router.push({name: 'ContractText'});
+    },
+    getContractRev(){
+      this.$router.push({name: 'ContractRev'});
+    },
+
   }
 }
 </script>

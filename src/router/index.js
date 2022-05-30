@@ -23,6 +23,9 @@ import ContractText from "@/components/contract/ContractText";
 import ProcessingTask from "@/components/task/ProcessingTask";
 import ContractRev from "@/components/contract/ContractRev";
 import CheckRev from "@/components/check/CheckRev";
+import UserInfo from "@/components/info/UserInfo";
+import BudgetInfo from "@/components/search/BudgetInfo";
+import DeclareInfo from "@/components/search/DeclareInfo";
 
 
 
@@ -144,6 +147,21 @@ const routes = [
                 path: '/checkRev',
                 name: 'CheckRev',
                 component: CheckRev
+            },
+            {
+                path: '/userInfo',
+                name: 'UserInfo',
+                component: UserInfo
+            },
+            {
+                path: '/budgetInfo',
+                name: 'BudgetInfo',
+                component: BudgetInfo
+            },
+            {
+                path: '/declareInfo',
+                name: 'DeclareInfo',
+                component: DeclareInfo
             },
 
         ]

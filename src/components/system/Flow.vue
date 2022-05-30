@@ -10,6 +10,20 @@
     </el-form-item>
   </el-form>
 
+  <el-dialog
+      title="流程图"
+      v-model="dialogVisible"
+      width="30%"
+      :before-close="handleClose">
+
+    <img :src="imgUrl" alt="" height="350" width="300">
+    <template #footer>
+    <span class="dialog-footer">
+    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+  </span>
+    </template>
+  </el-dialog>
+
   <!--展示表格-->
   <div style="height: 50%">
     <el-table
@@ -41,7 +55,7 @@
         <template v-slot="scope">
 
           <el-button
-              @click="updateFlow(scope.$index,scope.row)"
+              @click="lookImg"
               type="text"
               size="small">
             查看
@@ -91,8 +105,8 @@ export default {
   name: "Flow",
   data() {
     return {
-
-
+      imgUrl: "http://localhost:8080/files/2022-05-29/check.png",
+      dialogVisible: false,
       flow: {
         id: '',
         flowName: '',
@@ -126,25 +140,25 @@ export default {
     deployFlow(index, row) {
       console.log(row.id)
 
-      const _this= this;
+      const _this = this;
       axios({
-        method:"post",
+        method: "post",
         url: "/event/deployFlow",
-        params:{
+        params: {
           id: row.id
         }
-      }).then(function (resp){
+      }).then(function (resp) {
         console.log(resp);
 
-        _this.info.flowName='';
+        _this.info.flowName = '';
         _this.selectByCondition();
 
-        if("success"===resp.data){
+        if ("success" === resp.data) {
           _this.$message({
             message: '恭喜你，部署成功！',
             type: 'success'
           });
-        }else {
+        } else {
           _this.$message({
             message: '部署失败',
             type: 'error'
@@ -153,26 +167,29 @@ export default {
 
       })
     },
-    updateFlow(index, row){},
+    lookImg() {
+      this.dialogVisible=true
 
-    deleteFlow(index, row){
-      const _this=this;
+    },
+
+    deleteFlow(index, row) {
+      const _this = this;
       axios({
-        method:"post",
-        url:"/event/deleteFlow",
-        params:{
-          id : row.id
+        method: "post",
+        url: "/event/deleteFlow",
+        params: {
+          id: row.id
         }
-      }).then(function (resp){
-        _this.info.flowName='';
+      }).then(function (resp) {
+        _this.info.flowName = '';
         _this.selectByCondition();
         console.log(resp);
-        if("success"===resp.data){
+        if ("success" === resp.data) {
           _this.$message({
             message: '恭喜你，禁用成功！',
             type: 'success'
           });
-        }else {
+        } else {
           _this.$message({
             message: '禁用失败',
             type: 'error'
@@ -203,7 +220,21 @@ export default {
       }).then(function (resp) {
         _this.tableData = resp.data;
       })
-    }
+    },
+    handleClose(done) {
+      const _this = this
+      this.$confirm('确认关闭？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+          .then(_ => {
+            _this.selectByCondition()
+            done();
+          })
+          .catch(_ => {
+          });
+    },
 
   }
 }

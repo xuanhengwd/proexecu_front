@@ -20,7 +20,7 @@
       <h4>所属部门：{{ user.deptName }}</h4>
 
 
-        <el-button type="primary" round >个人信息</el-button>
+        <el-button type="primary" round  @click="toUserInfo">个人信息</el-button>
       <el-button type="danger" round @click="signOut">退出系统</el-button>
       </div>
 
@@ -59,6 +59,10 @@ export default {
     signOut(){
       localRemove('token');
       this.$router.push({path:'/login'});
+    },
+
+    toUserInfo(){
+      this.$router.push({name: 'UserInfo'});
     }
   }
 }

@@ -25,7 +25,6 @@
           <el-menu-item-group>
             <el-menu-item index="1-1" @click="processingTask">在办任务</el-menu-item>
             <el-menu-item index="1-2" @click="waitingTask">待办任务</el-menu-item>
-            <el-menu-item index="1-3" >已办任务</el-menu-item>
           </el-menu-item-group>
         </el-sub-menu>
 
@@ -98,9 +97,8 @@
             <span>查询统计</span>
           </template>
           <el-menu-item-group>
-            <el-menu-item index="6-1">预算信息</el-menu-item>
-            <el-menu-item index="6-2">申报信息</el-menu-item>
-
+            <el-menu-item index="6-1" @click="getBudgetInfo">预算信息</el-menu-item>
+            <el-menu-item index="6-2" @click="getDeclareInfo">申报信息</el-menu-item>
           </el-menu-item-group>
 
         </el-sub-menu>
@@ -197,6 +195,12 @@ export default {
     },
     getCheckRev(){
       this.$router.push({name: 'CheckRev'});
+    },
+    getBudgetInfo(){
+      this.$router.push({name: 'BudgetInfo'});
+    },
+    getDeclareInfo(){
+      this.$router.push({name: 'DeclareInfo'});
     }
 
 

@@ -69,15 +69,6 @@
       </el-form-item>
 
 
-      <!--      <el-form-item label="经办日前" >-->
-      <!--        <el-input v-model="contract.jbrq" placeholder="xxxx-xx-xx"></el-input>-->
-      <!--      </el-form-item>-->
-
-      <!--      <br>-->
-      <!--      <el-form-item>-->
-      <!--        <el-button type="primary" @click="agreeTask()">同意</el-button>-->
-      <!--        <el-button @click="dialogVisible = false">拒绝</el-button>-->
-      <!--      </el-form-item>-->
 
     </el-form>
 
